@@ -84,7 +84,7 @@ export const projects = [
     description:
       "A platform where users can upload and sell their prints to potential customers — built as an MVP for a printing retail company.",
     href: "",
-    image: "/assets/projects/Rem.png",
+    image: "/assets/projects/rem.png",
     bgImage: "/assets/backgrounds/curtains.jpg",
     frameworks: [
       { id: 1, name: "Next.js" },

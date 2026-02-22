@@ -12,21 +12,26 @@ import ContactSummary from "@/components/ContactSummary";
 import Contact from "@/components/Contact";
 import { useProgress } from "@react-three/drei";
 import { useRef } from "react";
+import { ScrollTrigger } from "@/lib/gsap";
 
 const Page = () => {
   const { progress } = useProgress();
   const [isReady, setIsReady] = useState(false);
-  const lenisRef =  useRef<LenisRef | null>(null);
-  
+  const lenisRef = useRef<LenisRef | null>(null);
+  const rafRef = useRef<number | null>(null);
+
   useEffect(() => {
     function update(time: any) {
-      lenisRef.current?.lenis?.raf(time)
+      lenisRef.current?.lenis?.raf(time);
+      rafRef.current = requestAnimationFrame(update);
     }
-  
-    const rafId = requestAnimationFrame(update)
-  
-    return () => cancelAnimationFrame(rafId)
-  }, [])
+
+    rafRef.current = requestAnimationFrame(update);
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (progress === 100) {
@@ -34,8 +39,37 @@ const Page = () => {
     }
   }, [progress]);
 
+  useEffect(() => {
+    const refresh = () => ScrollTrigger.refresh();
+    const debouncedRefresh = (() => {
+      let timer: ReturnType<typeof setTimeout> | null = null;
+      return () => {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(refresh, 180);
+      };
+    })();
+
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(refresh);
+    }
+
+    window.addEventListener("load", refresh);
+    window.addEventListener("resize", debouncedRefresh);
+    window.addEventListener("orientationchange", debouncedRefresh);
+
+    return () => {
+      window.removeEventListener("load", refresh);
+      window.removeEventListener("resize", debouncedRefresh);
+      window.removeEventListener("orientationchange", debouncedRefresh);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isReady) ScrollTrigger.refresh();
+  }, [isReady]);
+
   return (
-    <ReactLenis root className="relative w-screen min-h-screen overflow-x-auto">
+    <ReactLenis root className="relative w-screen min-h-screen overflow-x-hidden">
       {!isReady && (
         <div className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-black text-white transition-opacity duration-700 font-light">
           <p className="mb-4 text-xl tracking-widest animate-pulse">

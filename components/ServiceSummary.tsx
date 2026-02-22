@@ -1,58 +1,78 @@
 "use client";
 
 import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/all";
-gsap.registerPlugin(ScrollTrigger);
+import { useRef } from "react";
+import { gsap } from "@/lib/gsap";
 
 const ServiceSummary = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   useGSAP(() => {
-    gsap.to("#title-service-1", {
-      xPercent: 20,
-      scrollTrigger: {
-        trigger: "#title-service-1",
-        scrub: true,
-      },
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const rows = titleRefs.current.filter(Boolean);
+    if (!rows.length) return;
+
+    const desktopDistances = [20, -30, 100, -100];
+    const mobileDistances = [8, -10, 14, -14];
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 768px)", () => {
+      rows.forEach((row, index) => {
+        gsap.to(row, {
+          xPercent: desktopDistances[index] ?? 0,
+          scrollTrigger: {
+            trigger: row,
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        });
+      });
     });
-    gsap.to("#title-service-2", {
-      xPercent: -30,
-      scrollTrigger: {
-        trigger: "#title-service-2",
-        scrub: true,
-      },
+
+    mm.add("(max-width: 767px)", () => {
+      rows.forEach((row, index) => {
+        gsap.to(row, {
+          xPercent: mobileDistances[index] ?? 0,
+          scrollTrigger: {
+            trigger: row,
+            scrub: 0.25,
+            invalidateOnRefresh: true,
+          },
+        });
+      });
     });
-    gsap.to("#title-service-3", {
-      xPercent: 100,
-      scrollTrigger: {
-        trigger: "#title-service-3",
-        scrub: true,
-      },
-    });
-    gsap.to("#title-service-4", {
-      xPercent: -100,
-      scrollTrigger: {
-        trigger: "#title-service-4",
-        scrub: true,
-      },
-    });
-  });
+
+    return () => mm.revert();
+  }, { scope: sectionRef, dependencies: [], revertOnUpdate: true });
 
   return (
-    <section className="mt-20 overflow-hidden font-light leading-snug text-center mb-42 contact-text-responsive">
-      <div id="title-service-1">
+    <section
+      ref={sectionRef}
+      className="mt-20 overflow-x-hidden font-light leading-snug text-center mb-42 contact-text-responsive"
+    >
+      <div
+        ref={(el) => {
+          titleRefs.current[0] = el;
+        }}
+      >
         <p>Architecture</p>
       </div>
       <div
-        id="title-service-2"
-        className="flex items-center justify-center gap-3 translate-x-16"
+        ref={(el) => {
+          titleRefs.current[1] = el;
+        }}
+        className="flex items-center justify-center gap-3 md:translate-x-16"
       >
         <p className="font-normal">Development</p>
         <div className="w-10 h-1 md:w-32 bg-gold" />
         <p>Deployment</p>
       </div>
       <div
-        id="title-service-3"
-        className="flex items-center justify-center gap-3 -translate-x-48"
+        ref={(el) => {
+          titleRefs.current[2] = el;
+        }}
+        className="flex items-center justify-center gap-3 md:-translate-x-48"
       >
         <p>APIs</p>
         <div className="w-10 h-1 md:w-32 bg-gold" />
@@ -60,7 +80,12 @@ const ServiceSummary = () => {
         <div className="w-10 h-1 md:w-32 bg-gold" />
         <p>Scalability</p>
       </div>
-      <div id="title-service-4" className="translate-x-48">
+      <div
+        ref={(el) => {
+          titleRefs.current[3] = el;
+        }}
+        className="md:translate-x-48"
+      >
         <p>Databases</p>
       </div>
     </section>

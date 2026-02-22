@@ -2,7 +2,7 @@
 import { socials } from "@/constants";
 import { useGSAP } from "@gsap/react";
 import React, { useRef, useState } from "react";
-import gsap from "gsap/all";
+import { gsap } from "@/lib/gsap";
 import { useEffect } from "react";
 import { Link } from "react-scroll";
 import Magnetic from "../ui/Magnetic";
@@ -63,7 +63,11 @@ const Nav = () => {
         { rotate: -45, y: 3.3, duration: 0.3, ease: "power2.inOut" },
         "<"
       );
-  });
+    return () => {
+      tl.current?.kill();
+      iconTL.current?.kill();
+    };
+  }, { scope: navRef, dependencies: [], revertOnUpdate: true });
 
   useEffect(() => {
     const handleScroll = () => {

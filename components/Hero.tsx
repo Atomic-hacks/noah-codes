@@ -15,7 +15,6 @@ const Hero = () => {
     <section id="home" className="flex flex-col justify-end min-h-screen">
       <AnimatedHeaderSection
         title="Noah"
-        textColor="text-black"
         text={text}
         subTitle="You can can say i'm atomic"
       />

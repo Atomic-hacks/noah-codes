@@ -1,8 +1,8 @@
+"use client";
+
 import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
 import { useRef } from "react";
-import { ScrollTrigger } from "gsap/all";
-gsap.registerPlugin(ScrollTrigger);
+import { gsap } from "@/lib/gsap";
 const AnimatedTextLines = ({
   text,
   className,
@@ -15,17 +15,43 @@ const AnimatedTextLines = ({
   const lineRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   useGSAP(() => {
-    if (lineRefs.current.length > 0) {
-      gsap.from(lineRefs.current, {
-        y: 100,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.3,
-        ease: "back.out",
-        scrollTrigger: { trigger: containerRef.current },
-      });
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
     }
-  });
+
+    if (lineRefs.current.length > 0) {
+      const mm = gsap.matchMedia();
+      mm.add("(max-width: 767px)", () => {
+        gsap.from(lineRefs.current, {
+          y: 40,
+          opacity: 0,
+          duration: 0.6,
+          stagger: 0.15,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 90%",
+            invalidateOnRefresh: true,
+          },
+        });
+      });
+      mm.add("(min-width: 768px)", () => {
+        gsap.from(lineRefs.current, {
+          y: 100,
+          opacity: 0,
+          duration: 1,
+          stagger: 0.3,
+          ease: "back.out",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            invalidateOnRefresh: true,
+          },
+        });
+      });
+
+      return () => mm.revert();
+    }
+  }, { dependencies: [text], scope: containerRef, revertOnUpdate: true });
 
   return (
     <div ref={containerRef} className={`${className}`}>

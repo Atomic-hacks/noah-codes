@@ -4,10 +4,12 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import AnimatedHeaderSection from "@/components/ui/AnimatedHeaderSection";
 import { projects } from "../constants";
 import { useRef, useState } from "react";
-import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { gsap } from "@/lib/gsap";
 
 const Works = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
   const overlayRefs = useRef<(HTMLDivElement | null)[]>([]);
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -21,6 +23,8 @@ const Works = () => {
   const moveY = useRef<any>(null);
 
   useGSAP(() => {
+    if (!previewRef.current || !sectionRef.current) return;
+
     moveX.current = gsap.quickTo(previewRef.current, "x", {
       duration: 1.5,
       ease: "power3.out",
@@ -30,18 +34,44 @@ const Works = () => {
       ease: "power3.out",
     });
 
-    gsap.from("#project", {
-      y: 100,
-      opacity: 0,
-      delay: 0.5,
-      duration: 1,
-      stagger: 0.3,
-      ease: "back.out",
-      scrollTrigger: {
-        trigger: "#project",
-      },
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const projectsList = projectRefs.current.filter(Boolean);
+    if (!projectsList.length) return;
+
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 768px)", () => {
+      gsap.from(projectsList, {
+        y: 100,
+        opacity: 0,
+        delay: 0.2,
+        duration: 1,
+        stagger: 0.2,
+        ease: "back.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+          invalidateOnRefresh: true,
+        },
+      });
     });
-  }, []);
+
+    mm.add("(max-width: 767px)", () => {
+      gsap.from(projectsList, {
+        y: 45,
+        opacity: 0,
+        duration: 0.5,
+        stagger: 0.08,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 85%",
+          invalidateOnRefresh: true,
+        },
+      });
+    });
+
+    return () => mm.revert();
+  }, { dependencies: [], scope: sectionRef, revertOnUpdate: true });
 
   const handleMouseEnter = (index: number) => {
     if (window.innerWidth < 768) return;
@@ -102,7 +132,11 @@ const Works = () => {
   };
 
   return (
-    <section id="work" className="flex flex-col min-h-screen">
+    <section
+      ref={sectionRef}
+      id="work"
+      className="flex flex-col min-h-screen overflow-x-clip"
+    >
       <AnimatedHeaderSection
         subTitle={"Logic meets Aesthetics, Seamlessly"}
         title={"Works"}
@@ -117,8 +151,10 @@ const Works = () => {
         {projects.map((project, index) => (
           <div
             key={project.id}
-            id="project"
             className="relative flex flex-col gap-1 py-5 cursor-pointer group md:gap-0"
+            ref={(el) => {
+              projectRefs.current[index] = el;
+            }}
             onMouseEnter={() => handleMouseEnter(index)}
             onMouseLeave={() => handleMouseLeave(index)}
           >
@@ -151,7 +187,7 @@ const Works = () => {
               ))}
             </div>
             {/* mobile preview image */}
-            <div className="relative flex items-center justify-center px-10 md:hidden h-[400px]">
+            <div className="relative flex items-center justify-center px-10 md:hidden h-[min(72vw,400px)]">
               <img
                 src={project.bgImage}
                 alt={`${project.name}-bg-image`}

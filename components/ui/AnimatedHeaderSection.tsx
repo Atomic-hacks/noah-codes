@@ -4,7 +4,7 @@ import React from "react";
 import { useRef } from "react";
 import AnimatedTextLines from "@/components/ui/AnimatedTextLines";
 import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
+import { gsap } from "@/lib/gsap";
 
 interface AnimatedHeaderSectionProps {
   subTitle: string;
@@ -28,31 +28,59 @@ const AnimatedHeaderSection: React.FC<AnimatedHeaderSectionProps> = ({
   const titleParts = shouldSplitTitle ? title.split(" ") : [title];
 
   useGSAP(() => {
-    const tl = gsap.timeline({
-      scrollTrigger: withScrollTrigger
-        ? {
-            trigger: contextRef.current,
-          }
-        : undefined,
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    const mm = gsap.matchMedia();
+    const scrollTrigger = withScrollTrigger
+      ? {
+          trigger: contextRef.current,
+          start: "top 85%",
+          invalidateOnRefresh: true,
+        }
+      : undefined;
+
+    mm.add("(max-width: 767px)", () => {
+      const tl = gsap.timeline({ scrollTrigger });
+      tl.from(contextRef.current, {
+        y: "10vh",
+        duration: 0.6,
+        ease: "power2.out",
+      });
+      tl.from(
+        headerRef.current,
+        {
+          opacity: 0,
+          y: 60,
+          duration: 0.6,
+          ease: "power2.out",
+        },
+        "<+0.1"
+      );
     });
 
-    tl.from(contextRef.current, {
-      y: "50vh",
-      duration: 1,
-      ease: "circ.out",
-    });
-
-    tl.from(
-      headerRef.current,
-      {
-        opacity: 0,
-        y: "200",
+    mm.add("(min-width: 768px)", () => {
+      const tl = gsap.timeline({ scrollTrigger });
+      tl.from(contextRef.current, {
+        y: "50vh",
         duration: 1,
         ease: "circ.out",
-      },
-      "<+0.2"
-    );
-  }, []);
+      });
+      tl.from(
+        headerRef.current,
+        {
+          opacity: 0,
+          y: 200,
+          duration: 1,
+          ease: "circ.out",
+        },
+        "<+0.2"
+      );
+    });
+
+    return () => mm.revert();
+  }, { scope: contextRef, dependencies: [withScrollTrigger], revertOnUpdate: true });
 
   return (
     <div ref={contextRef}>

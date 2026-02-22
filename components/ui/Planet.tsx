@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import React from "react";
 import { useGLTF } from "@react-three/drei";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
+import { gsap } from "@/lib/gsap";
 import { Group, Mesh } from "three";
 
 export function Planet(props: any) {
   const shapeContainer = useRef<Group>(null);
   const spheresContainer = useRef<Group>(null);
   const ringContainer = useRef<Mesh>(null);
-  const { nodes, materials } = useGLTF("models/Planet.glb") as any;
+  const { nodes, materials } = useGLTF("/models/Planet.glb") as any;
 
   useGSAP(() => {
     if (!shapeContainer.current) return;
@@ -45,7 +47,7 @@ export function Planet(props: any) {
       },
       "<"
     );
-  },[]);
+  }, { dependencies: [], revertOnUpdate: true });
 
   return (
     <group ref={shapeContainer} {...props} dispose={null}>
@@ -81,4 +83,4 @@ export function Planet(props: any) {
   );
 }
 
-useGLTF.preload("/Planet.glb");
+useGLTF.preload("/models/Planet.glb");
