@@ -4,6 +4,7 @@ import { useRef } from "react";
 import AnimatedHeaderSection from "./ui/AnimatedHeaderSection";
 import AnimatedTextLines from "./ui/AnimatedTextLines";
 import { gsap } from "@/lib/gsap";
+import Image from "next/image";
 
 const About = () => {
   const text = "I don’t overcomplicate it — I build, I ship, it slaps.";
@@ -72,14 +73,17 @@ const About = () => {
         title="About"
         textColor="text-white"
         text={text}
-        subTitle="I Think i've made it clear....i code"
+        subTitle="I think I’ve made it clear… I code"
         withScrollTrigger={true}
       />
       <div className="flex flex-col items-center justify-between gap-16 px-10 pb-16 text-xl font-light tracking-wide lg:flex-row md:text-2xl lg:text-3xl text-white/60">
-        <img
+        <Image
           ref={imgRef}
           src="/images/man.jpg"
-          alt="man"
+          alt="Portrait of Noah"
+          width={4480}
+          height={6720}
+          sizes="(max-width: 768px) 100vw, 448px"
           className="w-full max-w-md rounded-3xl"
         />
         <AnimatedTextLines text={aboutText} className={"w-full"} />

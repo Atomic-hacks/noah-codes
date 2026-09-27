@@ -7,6 +7,9 @@ import AnimatedHeaderSection from "./ui/AnimatedHeaderSection";
 
 const Hero = () => {
   const isMobile = useMediaQuery({ maxWidth: 853 });
+  const prefersReducedMotion = useMediaQuery({
+    query: "(prefers-reduced-motion: reduce)",
+  });
   const text = `I help growing brands and startups gain 
   unfair advantages through premium 
   solution driven websites/apps`;
@@ -16,7 +19,8 @@ const Hero = () => {
       <AnimatedHeaderSection
         title="Noah"
         text={text}
-        subTitle="You can can say i'm atomic"
+        textColor="text-black"
+        subTitle="You can say I’m atomic"
       />
       <figure
         className="absolute inset-0 -z-50 "
@@ -27,7 +31,7 @@ const Hero = () => {
           camera={{ position: [0, 0, -10], fov: 17.5, near: 1, far: 28 }}
         >
           <ambientLight intensity={0.5} />
-          <Float speed={0.5}>
+          <Float speed={prefersReducedMotion ? 0 : 0.5}>
             <Planet scale={isMobile ? 0.7 : 1} />
           </Float>
 

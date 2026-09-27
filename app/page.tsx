@@ -13,10 +13,14 @@ import Contact from "@/components/Contact";
 import { useProgress } from "@react-three/drei";
 import { useRef } from "react";
 import { ScrollTrigger } from "@/lib/gsap";
+import { useMediaQuery } from "react-responsive";
 
 const Page = () => {
   const { progress } = useProgress();
   const [isReady, setIsReady] = useState(false);
+  const prefersReducedMotion = useMediaQuery({
+    query: "(prefers-reduced-motion: reduce)",
+  });
   const lenisRef = useRef<LenisRef | null>(null);
   const rafRef = useRef<number | null>(null);
 
@@ -69,7 +73,12 @@ const Page = () => {
   }, [isReady]);
 
   return (
-    <ReactLenis root className="relative w-screen min-h-screen overflow-x-hidden">
+    <ReactLenis
+      ref={lenisRef}
+      root
+      options={{ smoothWheel: !prefersReducedMotion, autoRaf: false }}
+      className="relative w-full min-h-screen overflow-x-clip"
+    >
       {!isReady && (
         <div className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-black text-white transition-opacity duration-700 font-light">
           <p className="mb-4 text-xl tracking-widest animate-pulse">

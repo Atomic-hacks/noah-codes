@@ -2,7 +2,7 @@
 import { useRef } from "react";
 import Marquee from "@/components/ui/Marquee";
 import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
+import { gsap } from "@/lib/gsap";
 
 const ContactSummary = () => {
   const containerRef = useRef(null);
@@ -22,17 +22,34 @@ const ContactSummary = () => {
   ];
 
   useGSAP(() => {
-    gsap.to(containerRef.current, {
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "center center",
-        end: "+=800 center",
-        scrub: 0.5,
-        pin: true,
-        pinSpacing: true,
-        markers: false,
-      },
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 768px)", () => {
+      gsap.to(containerRef.current, {
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "center center",
+          end: "+=800 center",
+          scrub: 0.5,
+          pin: true,
+          pinSpacing: true,
+        },
+      });
     });
+    mm.add("(max-width: 767px)", () => {
+      gsap.to(containerRef.current, {
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "center center",
+          end: "+=420 center",
+          scrub: 0.5,
+          pin: true,
+          pinSpacing: true,
+        },
+      });
+    });
+    return () => mm.revert();
   }, []);
   return (
     <section
@@ -45,7 +62,14 @@ const ContactSummary = () => {
           “ Let’s build a <br />
           <span className="font-normal">memorable</span> &{" "}
           <span className="italic">inspiring</span> <br />
-          web application <span className="text-gold">together</span> “
+          web application{" "}
+          <a
+            href="#contact"
+            className="text-gold transition-colors hover:text-black/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+          >
+            together
+          </a>{" "}
+          “
         </p>
       </div>
       <Marquee

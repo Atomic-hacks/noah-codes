@@ -15,14 +15,14 @@ interface Social {
 const Contact: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const socialRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const text: string = `Got a question, how or project Idea?     WE'D love to hear from you and discus further!`;
+  const text: string = `Got a question, a thought, or a project idea? We’d love to hear from you and discuss it further!`;
 
   const items: string[] = [
-    "just imagin, I code",
-    "just imagin, I code",
-    "just imagin, I code",
-    "just imagin, I code",
-    "just imagin, I code",
+    "just imagine, I code",
+    "just imagine, I code",
+    "just imagine, I code",
+    "just imagine, I code",
+    "just imagine, I code",
   ];
 
   useGSAP(() => {
@@ -79,7 +79,7 @@ const Contact: React.FC = () => {
           textColor={"text-white"}
           withScrollTrigger={true}
         />
-        <div className="flex px-10 font-light text-white uppercase lg:text-[32px] text-[26px] leading-none mb-10">
+        <div className="mb-10 flex px-5 font-light text-white uppercase leading-none sm:px-10 lg:text-[32px] text-[26px]">
           <div className="flex flex-col w-full gap-10">
             <div
               ref={(el) => {
@@ -88,9 +88,9 @@ const Contact: React.FC = () => {
             >
               <h2>E-mail</h2>
               <div className="w-full h-px my-2 bg-white/30" />
-              <p className="text-xl tracking-wider lowercase md:text-2xl lg:text-3xl">
+              <a href="mailto:Atomicisnoah.code@gmail.com" className="block break-all text-base tracking-wide lowercase hover:text-white md:text-2xl lg:text-3xl">
                 Atomicisnoah.code@gmail.com
-              </p>
+              </a>
             </div>
             <div
               ref={(el) => {
@@ -99,9 +99,9 @@ const Contact: React.FC = () => {
             >
               <h2>Phone</h2>
               <div className="w-full h-px my-2 bg-white/30" />
-              <p className="text-xl lowercase md:text-2xl lg:text-3xl">
+              <a href="tel:+2349035244873" className="block text-xl lowercase hover:text-white md:text-2xl lg:text-3xl">
                 +234 903 524 4873
-              </p>
+              </a>
             </div>
             <div
               ref={(el) => {
@@ -115,7 +115,9 @@ const Contact: React.FC = () => {
                   <a
                     key={index}
                     href={social.href}
-                    className="text-xs leading-loose tracking-wides uppercase md:text-sm hover:text-white/80 transition-colors duration-200"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs leading-loose tracking-widest uppercase md:text-sm hover:text-white/80 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
                   >
                     {"{ "}
                     {social.name}

@@ -59,7 +59,7 @@ const Marquee: React.FC<MarqueeProps> = ({
         className={`marquee-container relative w-full h-20 md:h-[100px] ${className}`}
       >
         <div className="absolute inset-0">
-          <div className="marquee-track flex items-center h-full">
+          <div className="marquee-track flex items-center h-full" aria-hidden="true">
             {/* First instance */}
             <MarqueeContent />
             {/* Second instance for seamless loop */}

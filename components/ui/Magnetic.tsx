@@ -11,6 +11,7 @@ export default function Magnetic({ children }: MagneticProps) {
   const magneticRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const element = magneticRef.current;
     if (!element) return;
 

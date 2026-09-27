@@ -83,7 +83,7 @@ export const projects = [
     name: "RemoteNext",
     description:
       "A platform where users can upload and sell their prints to potential customers — built as an MVP for a printing retail company.",
-    href: "",
+    href: "https://remotenext.vercel.app",
     image: "/assets/projects/rem.png",
     bgImage: "/assets/backgrounds/curtains.jpg",
     frameworks: [
@@ -98,7 +98,7 @@ export const projects = [
     name: "Zuna Tech Website",
     description:
       "Company site for Zuna Tech — offering digital solutions in logistics, Machinery sourcing, and consultancy.",
-    href: "",
+    href: "https://zunatech.vercel.app",
     image: "/assets/projects/zunatech.png",
     bgImage: "/assets/backgrounds/abstract.jpg",
     frameworks: [
@@ -113,7 +113,7 @@ export const projects = [
     name: "xena store",
     description:
       "An online marketplace project with features like user authentication, product listings, and secure payments.",
-    href: "",
+    href: "https://xena-store.vercel.app",
     image: "/assets/projects/xena.png",
     bgImage: "/assets/backgrounds/black.jpg",
     frameworks: [
@@ -127,7 +127,7 @@ export const projects = [
     name: "Chat Wazobia",
     description:
       "A startup project integrating Nigerian languages into telecommunication chat services.",
-    href: "",
+    href: "https://chatwazobia.com",
     image: "/assets/projects/chatwazobia.png",
     bgImage: "/assets/backgrounds/africa.jpg",
     frameworks: [
@@ -142,11 +142,25 @@ export const projects = [
     name: "Archademy",
     description:
       "A sleek  website for an Architectural company showcasing projects, services, and writing.",
-    href: "",
-    image: "/assets/projects/spark.png",
+    href: "https://archdemy.vercel.app",
+    image: "/assets/projects/arch.png",
     bgImage: "/assets/backgrounds/blanket.jpg",
     frameworks: [
       { id: 1, name: "Next.js" },
+      { id: 2, name: "Framer-motion" },
+      { id: 3, name: "Tailwind CSS" },
+    ],
+  },
+  {
+    id: 6,
+    name: "Grvhq",
+    description:
+      "A modern e-commerce platform for shopping contemporary fashion and lifestyle products.",
+    href: "https://grvhq.com",
+    image: "/assets/projects/grv.png",
+    bgImage: "/assets/backgrounds/blanket.jpg",
+    frameworks: [
+      { id: 1, name: "React.js" },
       { id: 2, name: "Framer-motion" },
       { id: 3, name: "Tailwind CSS" },
     ],

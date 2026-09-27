@@ -15,6 +15,7 @@ export function Planet(props: any) {
   const { nodes, materials } = useGLTF("/models/Planet.glb") as any;
 
   useGSAP(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (!shapeContainer.current) return;
     if (!spheresContainer.current) return;
     if (!ringContainer.current) return;

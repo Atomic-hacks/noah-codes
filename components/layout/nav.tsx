@@ -21,7 +21,7 @@ const Nav = () => {
     { name: "Home", id: "home" },
     { name: "Services", id: "services" },
     { name: "About", id: "about" },
-    { name: "Work", id: "gallery" },
+    { name: "Work", id: "work" },
     { name: "Contact", id: "contact" },
   ];
 
@@ -73,15 +73,21 @@ const Nav = () => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       setShowBurger(
-        currentScrollY <= lastScrollY.current || currentScrollY < 10
+        currentScrollY <= lastScrollY.current || currentScrollY < 10 || isOpen
       );
       lastScrollY.current = currentScrollY;
     };
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isOpen]);
+
+  const closeMenu = () => {
+    if (!isOpen || !tl.current || !iconTL.current) return;
+    tl.current.reverse();
+    iconTL.current.reverse();
+    setIsOpen(false);
+  };
 
   const toggleMenu = () => {
     if (tl.current && iconTL.current) {
@@ -100,9 +106,12 @@ const Nav = () => {
     <>
       <nav
         ref={navRef}
-        className="fixed z-50 flex flex-col justify-between w-full h-full px-16 uppercase bg-black text-white/80 py-28 space-y-10 md:w-1/2 md:left-1/2"
+        aria-label="Main navigation"
+        aria-hidden={!isOpen}
+        inert={!isOpen}
+        className="fixed z-50 flex flex-col justify-between w-full h-full px-6 uppercase bg-black text-white/80 py-24 space-y-10 sm:px-10 sm:py-28 md:w-1/2 md:left-1/2 md:px-16"
       >
-        <div className="flex flex-col text-5xl gap-y-2 md:text-6xl">
+        <div className="flex flex-col text-4xl gap-y-2 sm:text-5xl md:text-6xl">
           {menuItems.map((section, index) => (
             <div
               key={index}
@@ -115,7 +124,8 @@ const Nav = () => {
                 offset={0}
                 duration={2000}
                 to={section.id}
-                className="transition-all duration-100 cursor-pointer hover:text-white"
+                onClick={closeMenu}
+                className="inline-block transition-all duration-100 cursor-pointer hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               >
                 {section.name}
               </Link>
@@ -129,9 +139,9 @@ const Nav = () => {
         >
           <div className="font-light">
             <p className="tracking-wider text-white/50">Email</p>
-            <p className="text-xl tracking-widest lowercase">
+            <a href="mailto:Atomicisnoah.code@gmail.com" className="block break-all text-sm tracking-wider lowercase sm:text-xl sm:tracking-widest">
               Atomicisnoah.code@gmail.com
-            </p>
+            </a>
           </div>
 
           <div className="font-light">
@@ -141,7 +151,9 @@ const Nav = () => {
                 <a
                   key={index}
                   href={social.href}
-                  className="text-sm leading-loose tracking-widest uppercase hover:text-white transition-colors duration-300"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm leading-loose tracking-widest uppercase hover:text-white transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
                 >
                   {social.name}
                 </a>
@@ -153,14 +165,19 @@ const Nav = () => {
 
       {/* Menu Toggle Button */}
       <Magnetic>
-        <div
-          className="z-50 fixed flex transition-[clip-path] duration-300 flex-col items-center justify-center gap-1 wwill-change-transform bg-black rounded-full cursor-pointer w-14 h-14 md:w-20 md:h-20 top-4 right-10"
+        <button
+          type="button"
+          aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={isOpen}
           onClick={toggleMenu}
-          style={
-            showBurger
-              ? { clipPath: "circle(50% at 50% 50%)" }
-              : { clipPath: "circle(0 at 50% 50%)" }
-          }
+          onFocus={() => setShowBurger(true)}
+          style={{
+            clipPath:
+              showBurger || isOpen
+                ? "circle(50% at 50% 50%)"
+                : "circle(0 at 50% 50%)",
+          }}
+          className="fixed top-4 right-4 z-[60] flex h-14 w-14 flex-col items-center justify-center gap-1 rounded-full bg-black transition-[clip-path] duration-300 will-change-transform focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:right-10 md:h-20 md:w-20"
         >
           <span
             ref={topLineRef}
@@ -170,7 +187,7 @@ const Nav = () => {
             ref={bottomLineRef}
             className="block w-8 h-0.5 bg-white rounded-full origin-center"
           ></span>
-        </div>
+        </button>
       </Magnetic>
     </>
   );

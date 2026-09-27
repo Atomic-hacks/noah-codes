@@ -4,7 +4,7 @@ import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
 import { useMediaQuery } from "react-responsive";
 import AnimatedHeaderSection from "./ui/AnimatedHeaderSection";
-import gsap from "gsap";
+import { gsap } from "@/lib/gsap";
 
 const Services = () => {
   const text =
@@ -12,6 +12,7 @@ const Services = () => {
   const serviceRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isDesktop = useMediaQuery({ minWidth: "48rem" }); //768px
   useGSAP(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     serviceRefs.current.forEach((el) => {
       if (!el) return;
 
@@ -41,7 +42,7 @@ const Services = () => {
             serviceRefs.current[index] = el;
           }}
           key={index}
-          className="sticky px-10 pt-6 pb-12 text-white bg-black border-t-2 border-white/30"
+          className="sticky px-5 sm:px-10 pt-6 pb-12 text-white bg-black border-t-2 border-white/30"
           style={
             isDesktop
               ? {
@@ -53,18 +54,21 @@ const Services = () => {
         >
           <div className="flex items-center justify-between gap-4 font-light">
             <div className="flex flex-col gap-6">
-              <h2 className="text-4xl lg:text-5xl">{service.title}</h2>
-              <p className="text-xl leading-relaxed tracking-widest lg:text-2xl text-white/60 text-pretty">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl">{service.title}</h2>
+              <p className="text-base leading-relaxed tracking-wide sm:text-xl lg:text-2xl text-white/60 text-pretty">
                 {service.description}
               </p>
               <div className="flex flex-col gap-2 text-2xl sm:gap-4 lg:text-3xl text-white/80">
                 {service.items.map((item, itemIndex) => (
                   <div key={`item-${index}-${itemIndex}`}>
-                    <h3 className="flex">
-                      <span className="mr-12 text-lg text-white/30">
+                    <h3 className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                      <span className="mr-2 text-lg text-white/30 sm:mr-4">
                         0{itemIndex + 1}
                       </span>
                       {item.title}
+                      <span className="text-sm font-light tracking-normal text-white/45 sm:text-base">
+                        {item.description}
+                      </span>
                     </h3>
                     {itemIndex < service.items.length - 1 && (
                       <div className="w-full h-px my-2 bg-white/30" />
