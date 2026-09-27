@@ -14,55 +14,54 @@ export function Planet(props: any) {
   const ringContainer = useRef<Mesh>(null);
   const { nodes, materials } = useGLTF("/models/Planet.glb") as any;
 
-  useGSAP(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (!shapeContainer.current) return;
-    if (!spheresContainer.current) return;
-    if (!ringContainer.current) return;
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      if (!shapeContainer.current) return;
+      if (!spheresContainer.current) return;
+      if (!ringContainer.current) return;
 
-    const tl = gsap.timeline();
-    tl.from(shapeContainer.current.position, {
-      y: 5,
-      duration: 3,
-      ease: "circ.out",
-    });
-    tl.from(
-      spheresContainer.current.rotation,
-      {
-        x: 0,
-        y: Math.PI,
-        z: -Math.PI,
-        duration: 10,
-        ease: "power1.inOut",
-      },
-      "-=25%"
-    );
-    tl.from(
-      ringContainer.current.rotation,
-      {
-        x: 0.8,
-        y: 0,
-        z: 0,
-        duration: 10,
-        ease: "power1.inOut",
-      },
-      "<"
-    );
-  }, { dependencies: [], revertOnUpdate: true });
+      const tl = gsap.timeline();
+      tl.from(shapeContainer.current.position, {
+        y: 5,
+        duration: 3,
+        ease: "circ.out",
+      });
+      tl.from(
+        spheresContainer.current.rotation,
+        {
+          x: 0,
+          y: Math.PI,
+          z: -Math.PI,
+          duration: 10,
+          ease: "power1.inOut",
+        },
+        "-=25%",
+      );
+      tl.from(
+        ringContainer.current.rotation,
+        {
+          x: 0.8,
+          y: 0,
+          z: 0,
+          duration: 10,
+          ease: "power1.inOut",
+        },
+        "<",
+      );
+    },
+    { dependencies: [], revertOnUpdate: true },
+  );
 
   return (
     <group ref={shapeContainer} {...props} dispose={null}>
       <group ref={spheresContainer}>
         <mesh
-          castShadow
-          receiveShadow
           geometry={nodes.Sphere.geometry}
           material={materials["Material.002"]}
           rotation={[0, 0, 0.741]}
         />
         <mesh
-          castShadow
-          receiveShadow
           geometry={nodes.Sphere2.geometry}
           material={materials["Material.001"]}
           position={[0.647, 1.03, -0.724]}
@@ -73,8 +72,6 @@ export function Planet(props: any) {
 
       <mesh
         ref={ringContainer}
-        castShadow
-        receiveShadow
         geometry={nodes.Ring.geometry}
         material={materials["Material.001"]}
         rotation={[-0.124, 0.123, -0.778]}
